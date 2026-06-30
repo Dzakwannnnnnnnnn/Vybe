@@ -12,7 +12,7 @@ class MessageController extends Controller
     /**
      * Show direct message inbox and active chat history.
      */
-    public function index(User $activeUser = null)
+    public function index(?User $activeUser = null)
     {
         $userId = Auth::id();
 

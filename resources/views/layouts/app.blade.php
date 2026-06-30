@@ -69,7 +69,7 @@
                         <span>Messages</span>
                     </a>
 
-                    <a href="{{ route('users.show', auth()->user()->username ?? 'unknown') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('users.show') && request()->route('user')->id === auth()->id() ? 'bg-gray-900 text-white font-semibold' : 'text-gray-400 hover:bg-gray-900/50 hover:text-white' }}">
+                    <a href="{{ route('users.show', auth()->user()->username ?? 'unknown') }}" class="flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('users.show') && request()->route('username') === auth()->user()->username ? 'bg-gray-900 text-white font-semibold' : 'text-gray-400 hover:bg-gray-900/50 hover:text-white' }}">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         <span>Profile</span>
                     </a>
@@ -110,7 +110,7 @@
                         <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-pink-500 text-[10px] font-bold text-white">{{ $totalUnread }}</span>
                     @endif
                 </a>
-                <a href="{{ route('users.show', auth()->user()->username ?? 'unknown') }}" class="{{ request()->routeIs('users.show') && request()->route('user')->id === auth()->id() ? 'text-white' : 'text-gray-400' }}">
+                <a href="{{ route('users.show', auth()->user()->username ?? 'unknown') }}" class="{{ request()->routeIs('users.show') && request()->route('username') === auth()->user()->username ? 'text-white' : 'text-gray-400' }}">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </a>
                 <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.edit') ? 'text-white' : 'text-gray-400' }}">

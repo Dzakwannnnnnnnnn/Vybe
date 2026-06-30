@@ -174,6 +174,27 @@
 
         {{-- ── THREAD Posts ──────────────────────────────────────────────── --}}
         <div x-show="timelineTab==='thread'" class="divide-y divide-gray-800/50" x-cloak>
+            <template x-for="post in threadPosts" :key="post.id">
+                <article class="px-4 py-4 hover:bg-gray-900/30 transition cursor-pointer"
+                         @click="window.location = post.show_url">
+                    <div class="flex gap-3">
+                        <a :href="post.user.profile_url" class="flex-shrink-0" @click.stop>
+                            <img :src="post.user.profile_picture_url" class="w-10 h-10 rounded-full object-cover" alt="">
+                        </a>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <a :href="post.user.profile_url" class="text-sm font-semibold text-white hover:underline truncate" @click.stop x-text="post.user.name"></a>
+                                    <span class="text-xs text-gray-500" x-text="'@ ' + post.user.username"></span>
+                                </div>
+                                <span class="text-xs text-gray-600 flex-shrink-0 ml-2" x-text="post.created_at_human"></span>
+                            </div>
+                            <p class="text-sm text-gray-200 mt-1.5 leading-relaxed whitespace-pre-line" x-text="post.content"></p>
+                        </div>
+                    </div>
+                </article>
+            </template>
+
             @foreach($posts->where('type','thread') as $post)
                 <article class="px-4 py-4 hover:bg-gray-900/30 transition cursor-pointer"
                          onclick="window.location='{{ route('posts.show', $post->id) }}'">
@@ -249,8 +270,81 @@ function vybeHome() {
         feedPosts: [],
         threadPosts: [],
         storyUploadOpen: false,
-        storyPreviewUrl: null
+        storyPreviewUrl: null,
+        async submitPost() {
+            this.postError = null;
+
+            const content = this.postContent.trim();
+            const mediaFile = this.$refs.mediaInput?.files?.[0] ?? null;
+
+            if (!content && !mediaFile) {
+                this.postError = 'Write something before posting.';
+                return;
+            }
+
+            if (this.postType === 'thread' && mediaFile) {
+                this.postError = 'Threads are text-only. Switch to Feed Post for images.';
+                return;
+            }
+
+            this.posting = true;
+
+            const formData = new FormData();
+            formData.append('type', this.postType);
+            formData.append('content', content);
+
+            if (this.postType === 'feed' && mediaFile) {
+                formData.append('media', mediaFile);
+            }
+
+            try {
+                const response = await fetch(POST_STORE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': CSRF,
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    this.postError = data.message || data.error || 'Post failed. Please try again.';
+                    return;
+                }
+
+                if (data.post.type === 'feed') {
+                    this.feedPosts.unshift(data.post);
+                    this.timelineTab = 'feed';
+                } else {
+                    this.threadPosts.unshift(data.post);
+                    this.timelineTab = 'thread';
+                }
+
+                this.postContent = '';
+                this.mediaPreview = null;
+
+                if (this.$refs.mediaInput) {
+                    this.$refs.mediaInput.value = '';
+                }
+            } catch (error) {
+                this.postError = 'Network error. Please try again.';
+            } finally {
+                this.posting = false;
+            }
+        }
     }
+}
+
+function postCard(postId, isLiked, likesCount, commentsCount) {
+    return {
+        postId,
+        isLiked,
+        likesCount,
+        commentsCount,
+    };
 }
 </script>
 </x-app-layout>

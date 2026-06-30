@@ -19,7 +19,8 @@
         <div class="relative">
             <div class="h-44 bg-gradient-to-r from-violet-900 to-pink-900 w-full"></div>
             <div class="absolute -bottom-14 left-4">
-                <div class="w-28 h-28 rounded-full p-[3px] bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 shadow-xl">
+                <div class="rounded-full p-[3px] bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 shadow-xl flex-shrink-0 overflow-hidden"
+                     style="width: 7rem; height: 7rem;">
                     <img src="{{ $user->profile_picture_url ?? 'https://ui-avatars.com/api/?name='.urlencode($user->name) }}" class="w-full h-full rounded-full object-cover border-4 border-gray-950" alt="">
                 </div>
             </div>
@@ -43,7 +44,7 @@
                 <h1 class="text-xl font-black text-white tracking-tight">{{ $user->name }}</h1>
                 <p class="text-sm text-gray-500">@&nbsp;{{ $user->username }}</p>
             </div>
-            <p class="text-sm text-gray-300 leading-relaxed">{{ $user->bio ?? 'No bio yet.' }}</p>
+            <p class="text-sm text-gray-300 leading-relaxed whitespace-pre-line"><x-linked-bio :text="$user->bio" /></p>
         </div>
 
         {{-- Tabs Menu --}}
