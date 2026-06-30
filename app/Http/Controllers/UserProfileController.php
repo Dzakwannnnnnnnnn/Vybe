@@ -3,33 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserProfileController extends Controller
 {
-    /**
-     * Display the specified user profile.
-     */
-    public function show(User $user)
+    public function show($username)
     {
-        $user->loadCount(['followers', 'following']);
+        // Cari user berdasarkan username, jika tidak ada tampilkan error 404
+        $user = User::where('username', $username)->firstOrFail();
 
-        // Load visual feed posts (media is typically present, type is feed)
-        $feedPosts = $user->posts()
-            ->where('type', 'feed')
-            ->latest()
-            ->get();
+        // Ambil posts milik user tersebut beserta relasinya jika ada
+        $posts = $user->posts()->latest()->get();
 
-        // Load textual thread posts (excluding replies)
-        $threadPosts = $user->posts()
-            ->where('type', 'thread')
-            ->whereNull('parent_id')
-            ->withCount(['likes', 'comments'])
-            ->latest()
-            ->get();
-
-        return view('profile.show', compact('user', 'feedPosts', 'threadPosts'));
+        // Kirim data ke view profile (sesuaikan dengan nama file blade kamu)
+        return view('profile.show', compact('user', 'posts'));
     }
 }

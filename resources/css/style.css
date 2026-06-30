@@ -1,0 +1,234 @@
+/* ===========================
+   MOUSE PARALLAX
+=========================== */
+
+.login-card{
+
+    transform-style:preserve-3d;
+
+    transition:
+    transform .15s linear,
+    box-shadow .3s ease;
+
+}
+
+.login-card:hover{
+
+    box-shadow:
+
+    0 40px 120px rgba(0,0,0,.45),
+
+    0 0 120px rgba(139,92,246,.18);
+
+}
+
+/* ===========================
+   SHINE BUTTON
+=========================== */
+
+.shine{
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.shine::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:-120%;
+
+width:70%;
+height:100%;
+
+background:
+
+linear-gradient(
+
+90deg,
+
+transparent,
+
+rgba(255,255,255,.5),
+
+transparent
+
+);
+
+transform:skewX(-20deg);
+
+}
+
+.shine:hover::before{
+
+animation:shine .9s;
+
+}
+
+@keyframes shine{
+
+100%{
+
+left:180%;
+
+}
+
+}
+
+/* ===========================
+   FLOATING PARTICLES
+=========================== */
+
+.particle{
+
+position:absolute;
+
+border-radius:999px;
+
+background:white;
+
+opacity:.15;
+
+animation:particle linear infinite;
+
+}
+
+@keyframes particle{
+
+0%{
+
+transform:
+
+translateY(40px)
+scale(0);
+
+opacity:0;
+
+}
+
+20%{
+
+opacity:.18;
+
+}
+
+100%{
+
+transform:
+
+translateY(-900px)
+scale(1);
+
+opacity:0;
+
+}
+
+}
+
+/* ===========================
+   NOISE
+=========================== */
+
+.noise{
+
+pointer-events:none;
+
+position:absolute;
+
+inset:0;
+
+opacity:.025;
+
+background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+
+mix-blend-mode:soft-light;
+
+}
+
+/* ===========================
+   INPUT GLOW
+=========================== */
+
+.glow-input{
+
+transition:.35s;
+
+}
+
+.glow-input:focus{
+
+box-shadow:
+
+0 0 0 4px rgba(139,92,246,.12),
+
+0 0 50px rgba(139,92,246,.15);
+
+}
+
+/* ===========================
+   STAGGER
+=========================== */
+
+.delay1{
+
+animation:fade .8s .1s both;
+
+}
+
+.delay2{
+
+animation:fade .8s .25s both;
+
+}
+
+.delay3{
+
+animation:fade .8s .4s both;
+
+}
+
+.delay4{
+
+animation:fade .8s .55s both;
+
+}
+
+/* ===========================
+   BACKGROUND LIGHT
+=========================== */
+
+.cursor-light{
+
+position:absolute;
+
+width:700px;
+height:700px;
+
+border-radius:999px;
+
+background:
+
+radial-gradient(
+
+circle,
+
+rgba(255,255,255,.08),
+
+transparent 70%
+
+);
+
+pointer-events:none;
+
+filter:blur(30px);
+
+transition:
+
+transform .08s linear;
+
+}

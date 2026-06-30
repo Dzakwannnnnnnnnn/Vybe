@@ -9,14 +9,18 @@ use App\Http\Controllers\FollowController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
+// Redirect root ke dashboard
 Route::get('/', fn() => redirect()->route('dashboard'));
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // Dashboard
+    // 1. Dashboard / Beranda
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
-    // Posts — CRUD + interactions
+    // 2. Archived Posts Page (Harus di atas route posts/{post} agar tidak dikira ID '{post}')
+    Route::get('/posts/archive-list', [PostController::class, 'archived'])->name('posts.archived');
+
+    // 3. Posts — CRUD + Interactions
     Route::post('/posts',                    [PostController::class, 'store'])->name('posts.store');
     Route::get('/posts/{post}',              [PostController::class, 'show'])->name('posts.show');
     Route::patch('/posts/{post}',            [PostController::class, 'edit'])->name('posts.edit');
@@ -28,28 +32,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/posts/{post}/repost',      [PostController::class, 'repost'])->name('posts.repost');
     Route::post('/posts/{post}/quote',       [PostController::class, 'quoteRepost'])->name('posts.quote');
 
-    // Archived posts page
-    Route::get('/archive', [PostController::class, 'archived'])->name('posts.archived');
-
-    // Stories
+    // 4. Stories
     Route::post('/stories', [StoryController::class, 'store'])->name('stories.store');
 
-    // Follow System
-    Route::post('/users/{user}/follow', [FollowController::class, 'toggle'])->name('follow.toggle');
-
-    // User profiles
-    Route::get('/users/{user:username}', [UserProfileController::class, 'show'])->name('users.show');
-
-    // Profile settings (Breeze)
+    // 5. Profile Settings (Laravel Breeze Default)
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Direct Messages
+    // 6. Direct Messages
     Route::get('/messages',                        [MessageController::class, 'index'])->name('messages.index');
     Route::get('/messages/{activeUser}',           [MessageController::class, 'index'])->name('messages.show');
     Route::post('/messages/{user}',                [MessageController::class, 'store'])->name('messages.store');
     Route::get('/messages/{user}/fetch',           [MessageController::class, 'fetchNew'])->name('messages.fetch');
+
+    // 7. Follow System & User Profiles
+    Route::post('/users/{user}/follow', [FollowController::class, 'toggle'])->name('follow.toggle');
+    
+    // PERBAIKAN DI SINI: Diubah menjadi {username} agar sinkron dengan Controller & Blade
+    Route::get('/users/{username}', [UserProfileController::class, 'show'])->name('users.show');
 });
 
 require __DIR__.'/auth.php';
